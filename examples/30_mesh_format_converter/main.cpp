@@ -2,6 +2,7 @@
 #include <cinolib/string_utilities.h>
 #include <cinolib/stl_container_utilities.h>
 #include <cinolib/meshes/trimesh.h>
+#include <cinolib/meshes/tetmesh.h>
 
 int main(int argc, char **argv)
 {
@@ -59,6 +60,12 @@ int main(int argc, char **argv)
     {
         read_VTK(argv[1], verts, polys);
     }
+    else if(ext.compare("OVM")==0 || ext.compare("ovm")==0)
+    {
+        std::vector<uint> e, p;
+        read_OVM(argv[1], verts, e, faces, p);
+        polys = polys_from_serialized_vids(p, 4);
+    }
     else
     {
         std::cout << "ERROR: unknown input format" << std::endl;
@@ -106,6 +113,11 @@ int main(int argc, char **argv)
     else if(ext.compare("VTK")==0 || ext.compare("vtk")==0)
     {
         write_VTK(argv[2], verts, polys);
+    }
+    else if(ext.compare("OVM")==0 || ext.compare("ovm")==0)
+    {
+        Tetmesh<> tmp(verts,polys);
+        write_OVM(argv[2], tmp);
     }
     else
     {
